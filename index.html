@@ -1,41 +1,99 @@
 
-<button id="pato">🦆</button>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🦆</title>
 
-<p id="contador">0</p>
-
-<video id="video67" src="67.mp4" 
-       style="display:none; width:100%; max-width:800px"
-       controls playsinline></video>
-
-<audio id="quack" src="quack.mp3" preload="auto"></audio>
-
-<script>
-let clicks = 0;
-
-const pato = document.getElementById("pato");
-const contador = document.getElementById("contador");
-const video = document.getElementById("video67");
-const quack = document.getElementById("quack");
-
-pato.addEventListener("click", async () => {
-    clicks++;
-    contador.textContent = clicks;
-
-    if (clicks === 67) {
-        pato.style.display = "none";
-        contador.style.display = "none";
-        video.style.display = "block";
-
-        try {
-            await video.play();
-        } catch (e) {
-            video.controls = true;
+    <style>
+        * {
+            box-sizing: border-box;
         }
 
-        return;
-    }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 25px;
+            background: #fff3a6;
+            font-family: monospace;
+        }
 
-    quack.currentTime = 0;
-    quack.play();
-});
-</script>
+        #pato {
+            background: #ffdf45;
+            border: 5px solid #493719;
+            padding: 30px;
+            font-size: 90px;
+            cursor: pointer;
+            box-shadow: 8px 8px 0 #493719;
+            transition: transform 0.1s;
+        }
+
+        #pato:active {
+            transform: translate(5px, 5px);
+            box-shadow: 3px 3px 0 #493719;
+        }
+
+        #contador {
+            font-size: 20px;
+            color: #493719;
+        }
+
+        #video67 {
+            display: none;
+            width: 90%;
+            max-width: 800px;
+            border: 5px solid #493719;
+            box-shadow: 8px 8px 0 #493719;
+        }
+    </style>
+</head>
+
+<body>
+
+    <button id="pato" aria-label="Pato">🦆</button>
+
+    <div id="contador">0</div>
+
+    <video id="video67" src="67.mp4" controls playsinline></video>
+
+    <audio id="quack" src="quack.mp3" preload="auto"></audio>
+
+    <script>
+        let clicks = 0;
+
+        const pato = document.getElementById("pato");
+        const contador = document.getElementById("contador");
+        const video = document.getElementById("video67");
+        const quack = document.getElementById("quack");
+
+        pato.addEventListener("click", async () => {
+            clicks++;
+            contador.textContent = clicks;
+
+            if (clicks === 67) {
+                pato.style.display = "none";
+                contador.style.display = "none";
+                video.style.display = "block";
+
+                try {
+                    await video.play();
+                } catch (erro) {
+                    video.controls = true;
+                }
+
+                return;
+            }
+
+            quack.currentTime = 0;
+
+            quack.play().catch(() => {});
+        });
+    </script>
+
+</body>
+</html>
