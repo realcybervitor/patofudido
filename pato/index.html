@@ -1,0 +1,47 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🦆</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #fff3a6;
+}
+
+button {
+    background: #ffdf45;
+    border: 5px solid #493719;
+    padding: 30px;
+    font-size: 90px;
+    cursor: pointer;
+    box-shadow: 8px 8px 0 #493719;
+}
+
+button:active {
+    transform: translate(5px, 5px);
+    box-shadow: 3px 3px 0 #493719;
+}
+</style>
+</head>
+
+<body>
+
+<button onclick="document.getElementById('quack').currentTime = 0;
+document.getElementById('quack').play()">🦆</button>
+
+<audio id="quack" src="quack.mp3" preload="auto"></audio>
+
+</body>
+</html>
