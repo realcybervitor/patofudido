@@ -2,98 +2,261 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🦆</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🦆</title>
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+<style>
+* {
+    box-sizing: border-box;
+}
 
-        body {
-            margin: 0;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            gap: 25px;
-            background: #fff3a6;
-            font-family: monospace;
-        }
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 25px;
+    background: #fff3a6;
+    font-family: monospace;
+    overflow: hidden;
+}
 
-        #pato {
-            background: #ffdf45;
-            border: 5px solid #493719;
-            padding: 30px;
-            font-size: 90px;
-            cursor: pointer;
-            box-shadow: 8px 8px 0 #493719;
-            transition: transform 0.1s;
-        }
+#pato {
+    position: relative;
+    z-index: 2;
+    background: #ffdf45;
+    border: 5px solid #493719;
+    padding: 30px;
+    font-size: 90px;
+    cursor: pointer;
+    box-shadow: 8px 8px 0 #493719;
+    transform-origin: center;
+    touch-action: manipulation;
+}
 
-        #pato:active {
-            transform: translate(5px, 5px);
-            box-shadow: 3px 3px 0 #493719;
-        }
+#contador {
+    font-size: 20px;
+    color: #493719;
+}
 
-        #contador {
-            font-size: 20px;
-            color: #493719;
-        }
+#video67 {
+    display: none;
+    width: 90%;
+    max-width: 800px;
+    position: relative;
+    z-index: 5;
+    border: 5px solid #493719;
+    box-shadow: 8px 8px 0 #493719;
+}
 
-        #video67 {
-            display: none;
-            width: 90%;
-            max-width: 800px;
-            border: 5px solid #493719;
-            box-shadow: 8px 8px 0 #493719;
-        }
-    </style>
+.mini-pato {
+    position: fixed;
+    z-index: 3;
+    pointer-events: none;
+    font-size: 40px;
+    animation: cair 2.5s linear forwards;
+}
+
+@keyframes fugir {
+    0% { transform: translate(0,0) rotate(0); }
+    25% { transform: translate(160px,-100px) rotate(90deg); }
+    50% { transform: translate(-170px,-160px) rotate(180deg); }
+    75% { transform: translate(100px,100px) rotate(300deg); }
+    100% { transform: translate(0,0) rotate(360deg); }
+}
+
+@keyframes girar {
+    to { transform: rotate(1080deg) scale(1.5); }
+}
+
+@keyframes pular {
+    0%,100% { transform: translateY(0); }
+    30% { transform: translateY(-180px) rotate(20deg); }
+    60% { transform: translateY(0) rotate(-20deg); }
+}
+
+@keyframes tremer {
+    0%,100% { transform: translate(0,0); }
+    20% { transform: translate(-15px,5px) rotate(-10deg); }
+    40% { transform: translate(15px,-5px) rotate(10deg); }
+    60% { transform: translate(-10px,0) rotate(-8deg); }
+    80% { transform: translate(10px,0) rotate(8deg); }
+}
+
+@keyframes gigante {
+    0%,100% { transform: scale(1); }
+    50% { transform: scale(2.5) rotate(15deg); }
+}
+
+@keyframes andar {
+    0%,100% { left: 0; }
+    50% { left: 180px; }
+}
+
+@keyframes cair {
+    from { transform: translateY(-100px) rotate(0); }
+    to { transform: translateY(110vh) rotate(900deg); }
+}
+
+@keyframes sumir {
+    0%,100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+@keyframes inclinar {
+    0%,100% { transform: rotate(0); }
+    30% { transform: rotate(35deg); }
+    70% { transform: rotate(-35deg); }
+}
+
+@keyframes flutuar {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-50px); }
+}
+
+@keyframes esticar {
+    0%,100% { transform: scaleX(1) scaleY(1); }
+    50% { transform: scaleX(1.5) scaleY(.65); }
+}
+
+@keyframes tela {
+    0%,100% { background: #fff3a6; }
+    50% { background: #ffe77a; }
+}
+
+body.surto {
+    animation: tela .3s linear 4;
+}
+
+</style>
 </head>
 
 <body>
 
-    <button id="pato" aria-label="Pato">🦆</button>
+<button id="pato" aria-label="Pato">🦆</button>
+<div id="contador">0</div>
 
-    <div id="contador">0</div>
+<video id="video67" src="67.mp4" controls playsinline></video>
+<audio id="quack" src="quack.mp3" preload="auto"></audio>
 
-    <video id="video67" src="67.mp4" controls playsinline></video>
+<script>
+let clicks = 0;
+let videoAtivo = false;
 
-    <audio id="quack" src="quack.mp3" preload="auto"></audio>
+const pato = document.getElementById("pato");
+const contador = document.getElementById("contador");
+const video = document.getElementById("video67");
+const quack = document.getElementById("quack");
 
-    <script>
-        let clicks = 0;
+const efeitos = [
+    "fugir 2s ease-in-out",
+    "girar 1.5s ease-in-out",
+    "pular 1s ease-in-out",
+    "tremer .7s linear",
+    "gigante 1.5s ease-in-out",
+    "sumir 1s ease-in-out",
+    "inclinar .8s ease-in-out",
+    "flutuar 1.5s ease-in-out",
+    "esticar 1s ease-in-out"
+];
 
-        const pato = document.getElementById("pato");
-        const contador = document.getElementById("contador");
-        const video = document.getElementById("video67");
-        const quack = document.getElementById("quack");
+function animarPato() {
+    if (videoAtivo) return;
 
-        pato.addEventListener("click", async () => {
-            clicks++;
-            contador.textContent = clicks;
+    pato.style.animation = "none";
+    void pato.offsetWidth;
 
-            if (clicks === 67) {
-                pato.style.display = "none";
-                contador.style.display = "none";
-                video.style.display = "block";
+    const efeito = efeitos[
+        Math.floor(Math.random() * efeitos.length)
+    ];
 
-                try {
-                    await video.play();
-                } catch (erro) {
-                    video.controls = true;
-                }
+    pato.style.animation = efeito;
 
-                return;
-            }
+    setTimeout(() => {
+        pato.style.animation = "";
+    }, 2500);
+}
 
-            quack.currentTime = 0;
+function chuvaDePatos() {
+    for (let i = 0; i < 25; i++) {
+        setTimeout(() => {
+            const mini = document.createElement("div");
+            mini.className = "mini-pato";
+            mini.textContent = ["🦆", "🐤", "🐥"][
+                Math.floor(Math.random() * 3)
+            ];
 
-            quack.play().catch(() => {});
-        });
-    </script>
+            mini.style.left = Math.random() * 100 + "vw";
+            mini.style.top = "-60px";
+            mini.style.animationDuration =
+                (1.5 + Math.random() * 3) + "s";
 
+            document.body.appendChild(mini);
+
+            setTimeout(() => mini.remove(), 5000);
+        }, i * 70);
+    }
+}
+
+function trocarPato() {
+    const patos = ["🦆", "🐤", "🐥", "🪿", "🐔"];
+    pato.textContent = patos[
+        Math.floor(Math.random() * patos.length)
+    ];
+
+    setTimeout(() => {
+        pato.textContent = "🦆";
+    }, 1800);
+}
+
+pato.addEventListener("click", async () => {
+    if (videoAtivo) return;
+
+    clicks++;
+    contador.textContent = clicks;
+
+    if (clicks === 67) {
+        videoAtivo = true;
+        pato.style.display = "none";
+        contador.style.display = "none";
+        video.style.display = "block";
+
+        try {
+            await video.play();
+        } catch (e) {}
+
+        return;
+    }
+
+    quack.currentTime = 0;
+    quack.play().catch(() => {});
+
+    if (Math.random() < 0.35) animarPato();
+    if (Math.random() < 0.12) chuvaDePatos();
+    if (Math.random() < 0.15) trocarPato();
+
+    if (Math.random() < 0.08) {
+        document.body.classList.add("surto");
+        setTimeout(() => {
+            document.body.classList.remove("surto");
+        }, 1300);
+    }
+});
+
+// Eventos aleatórios enquanto o site fica aberto
+setInterval(() => {
+    if (videoAtivo) return;
+
+    const sorteio = Math.random();
+
+    if (sorteio < 0.18) animarPato();
+    else if (sorteio < 0.23) chuvaDePatos();
+    else if (sorteio < 0.28) trocarPato();
+}, 7000);
+
+</script>
 </body>
 </html>
