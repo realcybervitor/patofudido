@@ -1,47 +1,41 @@
 
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🦆</title>
+<button id="pato">🦆</button>
 
-<style>
-* {
-    box-sizing: border-box;
-}
+<p id="contador">0</p>
 
-body {
-    margin: 0;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: #fff3a6;
-}
-
-button {
-    background: #ffdf45;
-    border: 5px solid #493719;
-    padding: 30px;
-    font-size: 90px;
-    cursor: pointer;
-    box-shadow: 8px 8px 0 #493719;
-}
-
-button:active {
-    transform: translate(5px, 5px);
-    box-shadow: 3px 3px 0 #493719;
-}
-</style>
-</head>
-
-<body>
-
-<button onclick="document.getElementById('quack').currentTime = 0;
-document.getElementById('quack').play()">🦆</button>
+<video id="video67" src="67.mp4" 
+       style="display:none; width:100%; max-width:800px"
+       controls playsinline></video>
 
 <audio id="quack" src="quack.mp3" preload="auto"></audio>
 
-</body>
-</html>
+<script>
+let clicks = 0;
+
+const pato = document.getElementById("pato");
+const contador = document.getElementById("contador");
+const video = document.getElementById("video67");
+const quack = document.getElementById("quack");
+
+pato.addEventListener("click", async () => {
+    clicks++;
+    contador.textContent = clicks;
+
+    if (clicks === 67) {
+        pato.style.display = "none";
+        contador.style.display = "none";
+        video.style.display = "block";
+
+        try {
+            await video.play();
+        } catch (e) {
+            video.controls = true;
+        }
+
+        return;
+    }
+
+    quack.currentTime = 0;
+    quack.play();
+});
+</script>
